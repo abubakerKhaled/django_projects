@@ -1,10 +1,10 @@
-{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Poll Results</title>
+  {% load static %}
   <link rel="stylesheet" type="text/css" href="{% static 'polls/styles.css' %}">
 </head>
 <body class="results-page">
@@ -25,6 +25,7 @@
         </ul>
         <div class="total-votes">Total votes: {{ question.total_votes }}</div>
         <a href="{% url 'polls:detail' question.id %}" class="vote-again-btn">Vote again</a>
+        <a href="{% url 'polls:index' %}" class="home-button">Return to Home</a>
     </div>
 </body>
 </html>

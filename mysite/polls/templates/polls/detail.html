@@ -1,10 +1,10 @@
-{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Vote on Poll</title>
+  {% load static %}
   <link rel="stylesheet" type="text/css" href="{% static 'polls/styles.css' %}">
 </head>
 <body class="detail-page">
@@ -26,6 +26,7 @@
       </div>
       <input type="submit" value="Submit Vote" class="submit-button">
     </form>
+    <a href="{% url 'polls:index' %}" class="home-button">Return to Home</a>
   </div>
 </body>
 </html>
