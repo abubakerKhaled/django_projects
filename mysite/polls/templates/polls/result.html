@@ -1,21 +1,30 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Result</title>
+  <title>Poll Results</title>
+  <link rel="stylesheet" type="text/css" href="{% static 'polls/styles.css' %}">
 </head>
-
-<body>
-    <h1>{{ question.question_text }}</h1>
-    <ul>
-        {% for choice in question.choice_set.all %}
-            <li>{{ choice.choice_text }} -- {{ choice.votes }} vote {{ choice.votes|pluralize }}</li>
-        {% endfor %}
-    </ul>
-
-    <a href="{% url 'polls:detail' question.id %}">Vote again?</a>
+<body class="results-page">
+    <div class="container">
+        <h1 class="results-title">Poll Results</h1>
+        <h2 class="question-text">{{ question.question_text }}</h2>
+        <ul class="results-list">
+            {% for choice in question.choice_set.all %}
+                <li class="result-item">
+                    <span class="choice-text">{{ choice.choice_text }}</span>
+                    <div class="vote-bar-container">
+                        <div class="vote-bar" style="width: {% widthratio choice.votes question.total_votes 100 %}%;">
+                            <span class="vote-count">{{ choice.votes }} vote{{ choice.votes|pluralize }}</span>
+                        </div>
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
+        <div class="total-votes">Total votes: {{ question.total_votes }}</div>
+        <a href="{% url 'polls:detail' question.id %}" class="vote-again-btn">Vote again</a>
+    </div>
 </body>
-
 </html>

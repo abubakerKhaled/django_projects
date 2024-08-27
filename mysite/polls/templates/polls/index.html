@@ -1,25 +1,29 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Home</title>
+  <title>Poll Questions</title>
+  <link rel="stylesheet" type="text/css" href="{% static 'polls/styles.css' %}">
 </head>
-
-<body>
-  <h1>Questions</h1>
-
-   {% if latest_questions %}
-        <ul>
-            {% for question in latest_questions %}
-                <li><a href="{% url 'polls:detail' question.id %}">{{ question.question_text }}</a></li>
-            {% endfor %}
-        </ul>
+<body class="index-page">
+  <div class="container">
+    <h1 class="page-title">Available Polls</h1>
+    {% if latest_question_list %}
+      <ul class="question-list">
+        {% for question in latest_question_list %}
+          <li class="question-item">
+            <a href="{% url 'polls:detail' question.id %}" class="question-link">
+              {{ question.question_text }}
+              <span class="arrow">&rarr;</span>
+            </a>
+          </li>
+        {% endfor %}
+      </ul>
     {% else %}
-        <p>No Polls are available </p>
+      <p class="no-polls">No polls are available at the moment.</p>
     {% endif %}
-
+  </div>
 </body>
-
 </html>
