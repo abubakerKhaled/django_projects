@@ -1,29 +1,50 @@
-from django.http import HttpResponse
-#from django.template import loader
-#from django.http import Http404
+from django.http import HttpResponseRedirect
+from django.shortcuts import render, get_object_or_404
+from django.urls import reverse
+from django.views import generic
 
-# this is the shortcuts of the HttpResponse and loader moduls
-# this is the shortcuts of the Http404
-from django.shortcuts import render, get_object_or_404, get_list_or_404
+from .models import Question, Choice
 
-from .models import Question
 
-app_name = "polls"
+class IndexView(generic.ListView):
+    """Display the last five published questions."""
+    template_name = "polls/index.html"
+    context_object_name = "latest_question_list"
 
-def index(request):
-    latest_questions = get_list_or_404(Question)[:5]
-    context = {
-            'latest_questions': latest_questions,
-        }
-    return render(request, "polls/index.html", context)
+    def get_queryset(self):
+        """Return the last five published questions."""
+        return Question.objects.order_by("-pub_date")[:5]
 
-def detail(request, question_id):
-    question = get_object_or_404(Question, pk=question_id)
-    return render(request, "polls/detail.html", {"question": question})
 
-def results(request, question_id):
-    response = "You're looking at the results of question %s."
-    return HttpResponse(response % question_id)
+class DetailView(generic.DetailView):
+    """Display the details of a specific question."""
+    model = Question
+    template_name = "polls/detail.html"
+
+
+class ResultView(generic.DetailView):
+    """Display the results of a specific question."""
+    model = Question
+    template_name = "polls/result.html"
+
 
 def vote(request, question_id):
-    return HttpResponse("You're voting on question %s." % question_id)
+    """Handle the voting process for a question."""
+    question = get_object_or_404(Question, pk=question_id)
+    try:
+        selected_choice = question.choice_set.get(pk=request.POST['choice'])
+    except (KeyError, Choice.DoesNotExist):
+        # Re-render the detail page with an error message
+        return render(
+            request,
+            "polls/detail.html",
+            {
+                "question": question,
+                "error_message": "You didn't select a choice.",
+            },
+        )
+    else:
+        # Save the vote and redirect to the results page
+        selected_choice.votes += 1
+        selected_choice.save()
+        return HttpResponseRedirect(reverse("polls:results", args=(question.id,)))
